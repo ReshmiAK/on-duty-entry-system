@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>OD Details</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <form method="POST" action="/submit">
+        <h1 class="form-title">OD Details</h1>
+
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required>
+
+        <label for="section">Section:</label>
+        <input type="text" id="section" name="section" required>
+
+        <label for="dept">Dept:</label>
+        <input type="text" id="dept" name="dept" required>
+
+        <label for="roll">Roll:</label>
+        <input type="text" id="roll" name="roll" required>
+
+        <label for="reason">Reason:</label>
+        <input type="text" id="reason" name="reason" required>
+
+        <label for="time">Time:</label>
+        <input type="text" id="time" name="time" required>
+
+        <button type="submit">Submit</button>
+    </form>
+</body>
+</html>
