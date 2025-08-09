@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    <form method="POST" action="/submit">
+    <form method="POST" action="/submit" id="odForm" onsubmit="handleSubmit(event)">
         <h1 class="form-title">OD Details</h1>
 
         <label for="name">Name:</label>
@@ -27,7 +27,16 @@
         <label for="time">Time:</label>
         <input type="text" id="time" name="time" required>
 
-        <button type="submit">Submit</button>
+        <button type="submit" id="submitBtn">Submit</button>
     </form>
+
+    <!-- JavaScript to disable resubmission -->
+    <script>
+    function handleSubmit(event) {
+        // Let the form submit normally but disable button instantly
+        document.getElementById("submitBtn").disabled = true;
+        alert("Form submitted successfully!");
+    }
+    </script>
 </body>
 </html>
