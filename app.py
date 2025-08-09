@@ -1,8 +1,21 @@
 from flask import Flask, render_template, request
+import openpyxl
+import pandas as pd
 import os
+from datetime import datetime
 import requests  
 
 app = Flask(__name__)
+
+EXCEL_FILE = 'od-details.xlsx'
+
+# Create Excel if not exists
+if not os.path.exists(EXCEL_FILE):
+    workbook = openpyxl.Workbook()
+    sheet = workbook.active
+    sheet.title = "OD Entries"
+    sheet.append(["Name", "Section", "Dept", "Roll", "Reason", "Time", "Submitted At"])
+    workbook.save(EXCEL_FILE)
 
 @app.route('/')
 def index():
@@ -20,21 +33,20 @@ def submit():
             'time': request.form['time']
         }
 
-        # Google Script Web App URL
+        # Your Google Apps Script Web App URL
         script_url = 'https://script.google.com/macros/s/AKfycbxWrPgNhS1Moso56GqYjDAYapH5118ZeJ54jqXHyns-GnwgXLG_AzZlBwwYo0lsoj5mOw/exec'
 
-        # Step 1: Check for duplicate before submitting
-        check_url = f"{script_url}?checkDuplicate=true&roll={data['roll']}&time={data['time']}"
-        check_response = requests.get(check_url)
-
-        if check_response.status_code == 200 and check_response.text.strip().lower() == "duplicate":
-            return "Duplicate entry detected! Submission blocked."
-
-        # Step 2: Submit if no duplicate
         response = requests.post(script_url, json=data)
 
         if response.status_code == 200:
-            return "Form submitted successfully!"
+            resp_text = response.text.strip().lower()
+
+            if resp_text == "duplicate":
+                return "⚠ Duplicate entry detected! This Roll and Time already exist."
+            elif resp_text == "success":
+                return "✅ Form submitted successfully!"
+            else:
+                return f"Unexpected response: {response.text}"
         else:
             return f"Failed to submit: {response.text}"
 
@@ -43,3 +55,4 @@ def submit():
 
 if __name__ == '__main__':
     app.run(debug=True)
+
